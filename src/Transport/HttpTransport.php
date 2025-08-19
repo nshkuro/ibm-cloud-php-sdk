@@ -6,6 +6,7 @@ namespace IBMCloud\Transport;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
 use IBMCloud\Contracts\MiddlewareInterface;
 use IBMCloud\Contracts\TransportInterface;
 use IBMCloud\Exceptions\Transport\NetworkException;
@@ -30,6 +31,11 @@ final class HttpTransport implements TransportInterface
     {
         $this->httpClient = $httpClient ?? new Client();
         $this->config = $config;
+    }
+
+    public function createRequest(string $method, string $uri, array $headers = [], mixed $body = null): RequestInterface
+    {
+        return new Request($method, $uri, $headers, $body);
     }
 
     public function send(RequestInterface $request): ResponseInterface

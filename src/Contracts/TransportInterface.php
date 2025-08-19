@@ -13,6 +13,11 @@ use Psr\Http\Message\ResponseInterface;
 interface TransportInterface
 {
     /**
+     * Create an HTTP request.
+     */
+    public function createRequest(string $method, string $uri, array $headers = [], mixed $body = null): RequestInterface;
+
+    /**
      * Send an HTTP request.
      */
     public function send(RequestInterface $request): ResponseInterface;

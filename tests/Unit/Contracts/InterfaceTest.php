@@ -50,6 +50,7 @@ class InterfaceTest extends TestCase
         $this->assertContains('authenticate', $methodNames);
         $this->assertContains('isExpired', $methodNames);
         $this->assertContains('refresh', $methodNames);
+        $this->assertContains('getToken', $methodNames);
     }
 
     public function testClientInterfaceExists(): void

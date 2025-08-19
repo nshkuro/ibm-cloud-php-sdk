@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace IBMCloud\Contracts;
 
+use IBMCloud\Authentication\ValueObjects\Token;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -25,4 +26,9 @@ interface AuthenticatorInterface
      * Refresh authentication if possible.
      */
     public function refresh(): void;
+
+    /**
+     * Get the current authentication token.
+     */
+    public function getToken(): Token;
 }

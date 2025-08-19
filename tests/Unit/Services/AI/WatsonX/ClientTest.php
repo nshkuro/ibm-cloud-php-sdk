@@ -32,7 +32,7 @@ final class ClientTest extends TestCase
         $info = $this->client->getServiceInfo();
 
         $this->assertSame('IBM WatsonX.ai Foundation Models', $info['service']);
-        $this->assertSame('2023-05-02', $info['api_version']);
+        $this->assertSame('2023-10-25', $info['api_version']);
         $this->assertSame('https://us-south.ml.cloud.ibm.com', $info['base_url']);
         $this->assertArrayHasKey('endpoints', $info);
     }

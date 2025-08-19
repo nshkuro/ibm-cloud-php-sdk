@@ -38,13 +38,6 @@ final readonly class Scope
         return new self('watsonx-ai', $region);
     }
 
-    /**
-     * Create scope for Document Intelligence service.
-     */
-    public static function documentIntelligence(string $region = 'us-south'): self
-    {
-        return new self('document-intelligence', $region);
-    }
 
     /**
      * Create global scope for all services.

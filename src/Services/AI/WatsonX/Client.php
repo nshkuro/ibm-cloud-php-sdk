@@ -9,9 +9,11 @@ use IBMCloud\Contracts\TransportInterface;
 use IBMCloud\Services\AI\Models\Requests\CompletionRequest;
 use IBMCloud\Services\AI\Models\Requests\EmbeddingRequest;
 use IBMCloud\Services\AI\Models\Requests\StreamRequest;
+use IBMCloud\Services\AI\Models\Requests\TextExtractionRequest;
 use IBMCloud\Services\AI\Models\Results\CompletionResult;
 use IBMCloud\Services\AI\Models\Results\EmbeddingResult;
 use IBMCloud\Services\AI\Models\Results\StreamResult;
+use IBMCloud\Services\AI\Models\Results\TextExtractionResult;
 use IBMCloud\Services\AI\Models\ModelCapabilities;
 use IBMCloud\Services\AI\ValueObjects\ModelId;
 use IBMCloud\Exceptions\Service\ServiceException;
@@ -21,7 +23,7 @@ use Psr\Http\Message\ResponseInterface;
 
 final class Client implements AIModelInterface
 {
-    private const API_VERSION = '2023-05-02';
+    private const API_VERSION = '2023-10-25';
     private const BASE_PATH = '/ml/v1';
 
     public function __construct(
@@ -186,6 +188,123 @@ final class Client implements AIModelInterface
     }
 
     /**
+     * Start text extraction from a document.
+     */
+    public function extractText(TextExtractionRequest $request): TextExtractionResult
+    {
+        $httpRequest = $this->buildTextExtractionRequest($request);
+        $response = $this->transport->send($httpRequest);
+        
+        $data = $this->parseResponse($response);
+        
+        return TextExtractionResult::fromApiResponse($data);
+    }
+
+    /**
+     * List text extraction requests.
+     */
+    public function listTextExtractions(
+        ?string $projectId = null,
+        ?string $spaceId = null,
+        ?int $limit = 100,
+        ?string $start = null
+    ): array {
+        $query = ['version' => self::API_VERSION];
+        
+        if ($projectId !== null) {
+            $query['project_id'] = $projectId;
+        } elseif ($spaceId !== null) {
+            $query['space_id'] = $spaceId;
+        } else {
+            throw new \InvalidArgumentException('Either project_id or space_id must be provided');
+        }
+
+        if ($limit !== null) {
+            $query['limit'] = $limit;
+        }
+
+        if ($start !== null) {
+            $query['start'] = $start;
+        }
+
+        $url = $this->buildUrl('/text/extractions', $query);
+
+        $httpRequest = $this->transport->createRequest('GET', $url);
+        $response = $this->transport->send($httpRequest);
+        
+        $data = $this->parseResponse($response);
+        
+        return $data['resources'] ?? [];
+    }
+
+    /**
+     * Get text extraction request by ID.
+     */
+    public function getTextExtraction(
+        string $id,
+        ?string $projectId = null,
+        ?string $spaceId = null
+    ): TextExtractionResult {
+        if (empty($id)) {
+            throw new \InvalidArgumentException('Extraction ID cannot be empty');
+        }
+
+        $query = ['version' => self::API_VERSION];
+        
+        if ($projectId !== null) {
+            $query['project_id'] = $projectId;
+        } elseif ($spaceId !== null) {
+            $query['space_id'] = $spaceId;
+        } else {
+            throw new \InvalidArgumentException('Either project_id or space_id must be provided');
+        }
+
+        $url = $this->buildUrl("/text/extractions/{$id}", $query);
+
+        $httpRequest = $this->transport->createRequest('GET', $url);
+        $response = $this->transport->send($httpRequest);
+        
+        $data = $this->parseResponse($response);
+        
+        return TextExtractionResult::fromApiResponse($data);
+    }
+
+    /**
+     * Delete text extraction request.
+     */
+    public function deleteTextExtraction(
+        string $id,
+        ?string $projectId = null,
+        ?string $spaceId = null,
+        bool $hardDelete = false
+    ): bool {
+        if (empty($id)) {
+            throw new \InvalidArgumentException('Extraction ID cannot be empty');
+        }
+
+        $query = ['version' => self::API_VERSION];
+        
+        if ($projectId !== null) {
+            $query['project_id'] = $projectId;
+        } elseif ($spaceId !== null) {
+            $query['space_id'] = $spaceId;
+        } else {
+            throw new \InvalidArgumentException('Either project_id or space_id must be provided');
+        }
+
+        if ($hardDelete) {
+            $query['hard_delete'] = 'true';
+        }
+
+        $url = $this->buildUrl("/text/extractions/{$id}", $query);
+
+        $httpRequest = $this->transport->createRequest('DELETE', $url);
+        $response = $this->transport->send($httpRequest);
+        
+        return $response->getStatusCode() === 204;
+    }
+
+    /**
      * Build HTTP request for text completion.
      */
     private function buildCompletionRequest(CompletionRequest $request): RequestInterface
@@ -216,6 +335,18 @@ final class Client implements AIModelInterface
     private function buildEmbeddingRequest(EmbeddingRequest $request): RequestInterface
     {
         $url = $this->buildUrl('/text/embeddings', ['version' => self::API_VERSION]);
+        
+        return $this->transport->createRequest('POST', $url, [
+            'Content-Type' => 'application/json',
+        ], json_encode($request->toArray()));
+    }
+
+    /**
+     * Build HTTP request for text extraction.
+     */
+    private function buildTextExtractionRequest(TextExtractionRequest $request): RequestInterface
+    {
+        $url = $this->buildUrl('/text/extractions', ['version' => self::API_VERSION]);
         
         return $this->transport->createRequest('POST', $url, [
             'Content-Type' => 'application/json',

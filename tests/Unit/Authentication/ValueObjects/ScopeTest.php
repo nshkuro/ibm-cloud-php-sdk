@@ -58,13 +58,6 @@ class ScopeTest extends TestCase
         $this->assertSame('us-south', $scope->region);
     }
 
-    public function testDocumentIntelligenceScope(): void
-    {
-        $scope = Scope::documentIntelligence('us-east');
-        
-        $this->assertSame('document-intelligence', $scope->service);
-        $this->assertSame('us-east', $scope->region);
-    }
 
     public function testGlobalScope(): void
     {

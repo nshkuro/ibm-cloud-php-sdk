@@ -39,7 +39,35 @@ final readonly class ApiKey
     }
 
     /**
+     * Get the raw API key value.
+     * 
+     * WARNING: This returns the actual API key value.
+     * Use with caution to avoid exposing sensitive data in logs.
+     * 
+     * @return string The raw API key value
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * Convert the API key to string representation.
+     * 
+     * Returns a masked version of the API key for safe logging.
+     * Shows only the first and last 4 characters.
+     * 
+     * @return string Masked API key (e.g., "1bmc****wxyz")
+     */
+    public function __toString(): string
+    {
+        return $this->masked();
+    }
+
+    /**
      * Mask the API key for logging (show only first and last 4 chars).
+     * 
+     * @return string Masked API key value
      */
     public function masked(): string
     {

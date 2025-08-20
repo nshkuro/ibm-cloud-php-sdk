@@ -30,6 +30,70 @@ final class GenerationParameters
     }
 
     /**
+     * Create new instance with default values.
+     * 
+     * Factory method for creating a new GenerationParameters instance
+     * with sensible defaults for text generation.
+     * 
+     * @return self New instance with default parameters
+     */
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    /**
+     * Set the maximum number of tokens to generate.
+     * 
+     * Alias for maxNewTokens() providing a more intuitive method name.
+     * 
+     * @param int $tokens Maximum number of tokens to generate (1-1024)
+     * @return self New instance with updated max tokens
+     */
+    public function withMaxTokens(int $tokens): self
+    {
+        return $this->maxNewTokens($tokens);
+    }
+
+    /**
+     * Set the temperature for generation randomness.
+     * 
+     * Alias for temperature() with automatic Temperature value object creation.
+     * 
+     * @param float $temp Temperature value (0.0-2.0, where 0 is deterministic)
+     * @return self New instance with updated temperature
+     */
+    public function withTemperature(float $temp): self
+    {
+        return $this->temperature(Temperature::from($temp));
+    }
+
+    /**
+     * Set the nucleus sampling probability.
+     * 
+     * Alias for topP() providing a more fluent interface.
+     * 
+     * @param float $p Cumulative probability for nucleus sampling (0.0-1.0)
+     * @return self New instance with updated top-p value
+     */
+    public function withTopP(float $p): self
+    {
+        return $this->topP($p);
+    }
+
+    /**
+     * Get the maximum number of tokens to generate.
+     * 
+     * Alias for backward compatibility with different naming conventions.
+     * 
+     * @return int|null Maximum tokens or null if not set
+     */
+    public function getMaxTokens(): ?int
+    {
+        return $this->maxNewTokens;
+    }
+
+    /**
      * Set decoding method.
      */
     public function decodingMethod(string $method): self

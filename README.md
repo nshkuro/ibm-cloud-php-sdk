@@ -1,5 +1,7 @@
 # IBM Cloud PHP SDK
 
+> ⚠️ **Disclaimer**: This SDK is entirely AI-generated and is not an official IBM product. Use at your own risk and always verify the generated code for production use.
+
 A modern, type-safe PHP SDK for IBM Cloud Services with enterprise-grade features.
 
 [![PHP Version](https://img.shields.io/badge/php-%5E8.1-blue.svg)](https://php.net)
@@ -44,7 +46,7 @@ The IBM Cloud PHP SDK provides a comprehensive, modern interface to IBM Cloud se
 ### Installation
 
 ```bash
-composer require ibm-cloud/php-sdk
+composer require nshkuro/ibm-cloud-php-sdk
 ```
 
 ### Basic Configuration
@@ -295,20 +297,154 @@ try {
 
 ## Examples
 
-The `examples/` directory contains comprehensive usage examples:
+The `examples/` directory contains comprehensive usage examples demonstrating real-world implementations.
 
-- **`watsonx-example.php`**: Foundation models with completions
-- **`watsonx-streaming-example.php`**: Real-time streaming responses
-- **`watsonx-text-extraction-example.php`**: Document text extraction
-- **`object-storage-example.php`**: File operations and management
-- **`complete-pipeline-example.php`**: Full middleware pipeline demonstration
+### Prerequisites for Examples
 
-Run examples:
-
+1. **Setup Environment Variables**:
 ```bash
 cd examples
-php watsonx-example.php
+cp .env.example .env
+# Edit .env and add your IBM Cloud credentials
 ```
+
+2. **Required Environment Variables**:
+```bash
+# Core Authentication
+IBM_API_KEY=your-ibm-cloud-api-key
+
+# WatsonX Configuration
+IBM_WATSONX_PROJECT_ID=your-project-id
+IBM_WATSONX_URL=https://eu-de.ml.cloud.ibm.com
+
+# Object Storage
+TEST_BUCKET_NAME=your-bucket-name
+IBM_COS_SERVICE_INSTANCE_ID=your-instance-id
+
+# Text Extraction
+IBM_DOCUMENT_CONNECTION_ID=your-doc-connection
+IBM_RESULTS_CONNECTION_ID=your-results-connection
+```
+
+### Available Examples
+
+#### Core Examples
+
+- **`simple-example.php`**: Quick start demonstration of basic SDK usage
+- **`complete-pipeline-example.php`**: Full middleware pipeline with all features enabled
+
+#### WatsonX AI Examples
+
+- **`watsonx-example.php`**: Foundation models with text generation
+  - Shows model selection, parameter configuration
+  - Demonstrates completion requests with different prompts
+  
+- **`watsonx-streaming-example.php`**: Real-time streaming responses
+  - Token-by-token streaming for interactive applications
+  - Progress tracking and partial response handling
+  
+- **`watsonx-simple-example.php`**: Minimal WatsonX setup
+  - Simplest possible implementation
+  - Good starting point for new users
+
+- **`watsonx-text-extraction-example.php`**: Document processing
+  - PDF and document text extraction
+  - Results management and retrieval
+  
+- **`watsonx-text-extraction-simple.php`**: Basic text extraction
+  - Simplified document processing workflow
+  
+- **`watsonx-excel-test.php`**: Excel file processing
+  - Extract data from Excel spreadsheets
+  - Structured data extraction examples
+
+- **`watsonx-analyze-results.php`**: Process extraction results
+  - Parse and analyze extracted text
+  - Handle structured extraction output
+
+- **`watsonx-real-test.php`**: Production-ready implementation
+  - Real-world error handling
+  - Retry strategies and resilience patterns
+
+#### Object Storage Examples
+
+- **`object-storage-example.php`**: Real IBM COS integration
+  - Full CRUD operations (Create, Read, Update, Delete)
+  - Streaming support for large files
+  - Custom metadata handling
+  
+- **`object-storage-mock-example.php`**: Mock implementation for testing
+  - Works without real credentials
+  - Perfect for development and testing
+  - Demonstrates all SDK features
+
+### Running Examples
+
+```bash
+# Navigate to examples directory
+cd examples
+
+# Run a simple example (requires valid credentials)
+php simple-example.php
+
+# Run mock example (no credentials needed)
+php object-storage-mock-example.php
+
+# Run WatsonX streaming demo
+php watsonx-streaming-example.php
+
+# Process documents with text extraction
+php watsonx-text-extraction-example.php
+```
+
+### Example Output
+
+**WatsonX Completion Example**:
+```
+Initializing WatsonX client...
+✓ Client configured for region: eu-de
+
+Sending completion request...
+Model: ibm/granite-13b-instruct-v2
+Prompt: "Explain quantum computing in simple terms"
+
+Response:
+"Quantum computing uses quantum bits (qubits) that can exist in 
+multiple states simultaneously, unlike classical bits that are 
+either 0 or 1. This allows quantum computers to process many 
+calculations at once..."
+
+Tokens used: 150
+Generation time: 1.2s
+```
+
+**Object Storage Example**:
+```
+IBM Cloud Object Storage Demo
+=============================
+
+1. Authenticating with IBM Cloud...
+   ✓ Token obtained successfully
+
+2. Creating COS client...
+   ✓ Connected to: s3.us-south.cloud-object-storage.appdomain.cloud
+
+3. Uploading file...
+   ✓ Uploaded: documents/example.txt (2.5 MB)
+   ETag: "d41d8cd98f00b204e9800998ecf8427e"
+
+4. Listing objects...
+   ✓ Found 3 objects in bucket
+   - documents/example.txt (2.5 MB)
+   - images/logo.png (45 KB)
+   - data/report.pdf (1.2 MB)
+```
+
+### Sample Files
+
+The `examples/files/` directory contains sample documents for testing:
+- `sample_1.txt`: Simple text file for basic operations
+- `Basingstoke - Categories and descriptions.xlsx`: Excel file for data extraction tests
 
 ## Development
 
@@ -367,9 +503,13 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for detai
 
 - **Documentation**: [IBM Cloud Docs](https://cloud.ibm.com/docs)
 - **API Reference**: [Context7 Resources](https://context7.com/ibm-cloud-docs)
-- **Issues**: [GitHub Issues](https://github.com/ibm-cloud/php-sdk/issues)
+- **Issues**: [GitHub Issues](https://github.com/nshkuro/ibm-cloud-php-sdk/issues)
 - **Community**: [IBM Developer Community](https://developer.ibm.com/community/)
+
+## Author
+
+**Nikolay Shkuro** - [nikolay@shkuro.net](mailto:nikolay@shkuro.net)
 
 ---
 
-**Built with ❤️ for the IBM Cloud community**
+**Built with ❤️ and AI assistance for the IBM Cloud community**

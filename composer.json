@@ -1,12 +1,14 @@
 {
-    "name": "ibm-cloud/php-sdk",
+    "name": "nshkuro/ibm-cloud-php-sdk",
     "description": "Modern PHP SDK for IBM Cloud Services with enterprise-grade features",
     "type": "library",
     "license": "Apache-2.0",
     "keywords": ["ibm", "cloud", "sdk", "watsonx", "ai", "object-storage", "document-intelligence"],
     "authors": [
         {
-            "name": "IBM Cloud PHP SDK Team"
+            "name": "Nikolay Shkuro",
+            "email": "nikolay@shkuro.net",
+            "role": "Lead Developer"
         }
     ],
     "require": {

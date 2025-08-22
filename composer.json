@@ -2,7 +2,7 @@
     "name": "nshkuro/ibm-cloud-php-sdk",
     "description": "Modern PHP SDK for IBM Cloud Services with enterprise-grade features",
     "type": "library",
-    "license": "Apache-2.0",
+    "license": "MIT",
     "keywords": ["ibm", "cloud", "sdk", "watsonx", "ai", "object-storage", "document-intelligence"],
     "authors": [
         {

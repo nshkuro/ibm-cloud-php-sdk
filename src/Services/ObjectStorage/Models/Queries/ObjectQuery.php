@@ -10,7 +10,7 @@ use IBMCloud\Services\ObjectStorage\ValueObjects\ObjectKey;
 /**
  * Query for object retrieval operations.
  */
-final readonly class ObjectQuery
+final class ObjectQuery
 {
     public function __construct(
         public BucketName $bucket,

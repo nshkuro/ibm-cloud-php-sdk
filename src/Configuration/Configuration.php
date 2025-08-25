@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Immutable configuration object for IBM Cloud SDK.
  */
-final readonly class Configuration
+final class Configuration
 {
     public function __construct(
         public TransportInterface $transport,

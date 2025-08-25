@@ -6,7 +6,7 @@ namespace IBMCloud\Services\AI\ValueObjects;
 
 use InvalidArgumentException;
 
-readonly final class Temperature
+final class Temperature
 {
     public const MIN_VALUE = 0.0;
     public const MAX_VALUE = 2.0;

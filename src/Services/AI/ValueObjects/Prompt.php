@@ -6,7 +6,7 @@ namespace IBMCloud\Services\AI\ValueObjects;
 
 use InvalidArgumentException;
 
-readonly final class Prompt
+final class Prompt
 {
     private function __construct(
         public string $content

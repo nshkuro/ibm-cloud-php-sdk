@@ -10,7 +10,7 @@ use DateTimeInterface;
 /**
  * Immutable value object representing an authentication token.
  */
-final readonly class Token
+final class Token
 {
     public function __construct(
         public string $value,

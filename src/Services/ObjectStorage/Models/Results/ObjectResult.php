@@ -12,7 +12,7 @@ use IBMCloud\Services\ObjectStorage\ValueObjects\StorageClass;
 /**
  * Result of an object storage operation.
  */
-final readonly class ObjectResult
+final class ObjectResult
 {
     public function __construct(
         public BucketName $bucket,

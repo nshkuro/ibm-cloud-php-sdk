@@ -7,7 +7,7 @@ namespace IBMCloud\Authentication\ValueObjects;
 /**
  * Immutable value object representing an IBM Cloud API key.
  */
-final readonly class ApiKey
+final class ApiKey
 {
     public function __construct(
         public string $value

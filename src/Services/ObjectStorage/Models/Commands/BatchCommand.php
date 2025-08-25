@@ -7,7 +7,7 @@ namespace IBMCloud\Services\ObjectStorage\Models\Commands;
 /**
  * Command for batch operations on multiple objects.
  */
-final readonly class BatchCommand
+final class BatchCommand
 {
     /** @var ObjectCommand[] */
     public array $commands;

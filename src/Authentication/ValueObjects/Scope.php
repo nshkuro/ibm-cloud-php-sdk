@@ -7,7 +7,7 @@ namespace IBMCloud\Authentication\ValueObjects;
 /**
  * Immutable value object representing authentication scope.
  */
-final readonly class Scope
+final class Scope
 {
     public function __construct(
         public string $service,

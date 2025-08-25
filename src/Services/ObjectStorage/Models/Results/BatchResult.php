@@ -7,7 +7,7 @@ namespace IBMCloud\Services\ObjectStorage\Models\Results;
 /**
  * Result of a batch operation.
  */
-final readonly class BatchResult
+final class BatchResult
 {
     /** @var ObjectResult[] */
     public array $successful;

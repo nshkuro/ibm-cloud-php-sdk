@@ -7,7 +7,7 @@ namespace IBMCloud\Services\ObjectStorage\ValueObjects;
 /**
  * Immutable value object representing a COS bucket name.
  */
-final readonly class BucketName
+final class BucketName
 {
     public function __construct(
         public string $value

@@ -11,7 +11,7 @@ use IBMCloud\Services\ObjectStorage\ValueObjects\StorageClass;
 /**
  * Command for object operations (store, delete).
  */
-final readonly class ObjectCommand
+final class ObjectCommand
 {
     public function __construct(
         public BucketName $bucket,

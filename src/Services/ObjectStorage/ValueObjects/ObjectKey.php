@@ -7,7 +7,7 @@ namespace IBMCloud\Services\ObjectStorage\ValueObjects;
 /**
  * Immutable value object representing a COS object key (path).
  */
-final readonly class ObjectKey
+final class ObjectKey
 {
     public function __construct(
         public string $value

@@ -6,7 +6,7 @@ namespace IBMCloud\Services\AI\ValueObjects;
 
 use InvalidArgumentException;
 
-readonly final class ModelId
+final class ModelId
 {
     public const GRANITE_3B_CODE = 'ibm/granite-3b-code-instruct';
     public const GRANITE_8B_CODE = 'ibm/granite-8b-code-instruct'; 

@@ -14,10 +14,6 @@ final class Prompt
         if (empty($this->content)) {
             throw new InvalidArgumentException('Prompt content cannot be empty.');
         }
-
-        if (strlen($this->content) > 32000) {
-            throw new InvalidArgumentException('Prompt content cannot exceed 32,000 characters.');
-        }
     }
 
     public static function from(string $content): self
@@ -117,25 +113,6 @@ final class Prompt
         return (int) ceil(strlen($this->content) / 4);
     }
 
-    /**
-     * Check if prompt contains potentially sensitive content.
-     */
-    public function hasSensitiveContent(): bool
-    {
-        $sensitivePatterns = [
-            '/\b(?:password|api_key|secret|token|credential)\b/i',
-            '/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/', // Credit card pattern
-            '/\b\d{3}-\d{2}-\d{4}\b/', // SSN pattern
-        ];
-        
-        foreach ($sensitivePatterns as $pattern) {
-            if (preg_match($pattern, $this->content)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
 
     public function toString(): string
     {

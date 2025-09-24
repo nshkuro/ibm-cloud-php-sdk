@@ -27,16 +27,6 @@ final class PromptTest extends TestCase
         Prompt::from('');
     }
 
-    public function testRejectsTooLongPrompt(): void
-    {
-        $longContent = str_repeat('a', 32001);
-        
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Prompt content cannot exceed 32,000 characters.');
-        
-        Prompt::from($longContent);
-    }
-
     public function testSystemMessage(): void
     {
         $prompt = Prompt::systemMessage('You are a helpful assistant.');
@@ -126,12 +116,4 @@ final class PromptTest extends TestCase
         $this->assertSame(4, $prompt->getEstimatedTokenCount());
     }
 
-    public function testHasSensitiveContent(): void
-    {
-        $this->assertTrue(Prompt::from('My password is 123456')->hasSensitiveContent());
-        $this->assertTrue(Prompt::from('API_KEY = secret')->hasSensitiveContent());
-        $this->assertTrue(Prompt::from('Credit card: 1234 5678 9012 3456')->hasSensitiveContent());
-        $this->assertTrue(Prompt::from('SSN: 123-45-6789')->hasSensitiveContent());
-        $this->assertFalse(Prompt::from('What is PHP?')->hasSensitiveContent());
-    }
 }

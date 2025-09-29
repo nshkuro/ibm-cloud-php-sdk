@@ -6,10 +6,12 @@ namespace IBMCloud\Services\AI\WatsonX;
 
 use IBMCloud\Contracts\Services\AIModelInterface;
 use IBMCloud\Contracts\TransportInterface;
+use IBMCloud\Services\AI\Models\Requests\ChatRequest;
 use IBMCloud\Services\AI\Models\Requests\CompletionRequest;
 use IBMCloud\Services\AI\Models\Requests\EmbeddingRequest;
 use IBMCloud\Services\AI\Models\Requests\StreamRequest;
 use IBMCloud\Services\AI\Models\Requests\TextExtractionRequest;
+use IBMCloud\Services\AI\Models\Results\ChatResult;
 use IBMCloud\Services\AI\Models\Results\CompletionResult;
 use IBMCloud\Services\AI\Models\Results\EmbeddingResult;
 use IBMCloud\Services\AI\Models\Results\StreamResult;
@@ -38,11 +40,25 @@ final class Client implements AIModelInterface
     {
         $httpRequest = $this->buildCompletionRequest($request);
         $response = $this->transport->send($httpRequest);
-        
+
         $data = $this->parseResponse($response);
-        
+
         return CompletionResult::fromApiResponse($data);
     }
+
+    /**
+     * Generate chat completion.
+     */
+    public function chat(ChatRequest $request): ChatResult
+    {
+        $httpRequest = $this->buildChatRequest($request);
+        $response = $this->transport->send($httpRequest);
+
+        $data = $this->parseResponse($response);
+
+        return ChatResult::fromApiResponse($data);
+    }
+
 
     /**
      * Generate text completion with streaming.
@@ -347,11 +363,24 @@ final class Client implements AIModelInterface
     private function buildTextExtractionRequest(TextExtractionRequest $request): RequestInterface
     {
         $url = $this->buildUrl('/text/extractions', ['version' => self::API_VERSION]);
-        
+
         return $this->transport->createRequest('POST', $url, [
             'Content-Type' => 'application/json',
         ], json_encode($request->toArray()));
     }
+
+    /**
+     * Build HTTP request for chat completion.
+     */
+    private function buildChatRequest(ChatRequest $request): RequestInterface
+    {
+        $url = $this->buildUrl('/text/chat', ['version' => self::API_VERSION]);
+
+        return $this->transport->createRequest('POST', $url, [
+            'Content-Type' => 'application/json',
+        ], json_encode($request->toArray()));
+    }
+
 
     /**
      * Build full URL with query parameters.

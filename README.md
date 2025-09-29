@@ -33,6 +33,7 @@ The IBM Cloud PHP SDK provides a comprehensive, modern interface to IBM Cloud se
 
 ### IBM Cloud Services
 - [x] **WatsonX.ai**: Foundation models with streaming responses and text extraction
+- [x] **WatsonX Chat API**: Multi-turn conversations with tool/function calling support
 - [x] **Object Storage**: Full CRUD operations with streaming and batch support
 - [x] **Text Extraction**: Document processing via WatsonX.ai with results management
 
@@ -118,6 +119,79 @@ $request = CompletionRequest::create($modelId, $prompt, $projectId)
 
 $completion = $watsonx->complete($request);
 echo $completion->getResults()[0]['generated_text'];
+```
+
+### Chat API - Multi-turn Conversations
+
+> **Note**: The Chat API requires models that support chat format. Currently tested with `mistralai/mistral-large`. Some models may require deployment with prompt templates.
+
+```php
+use IBMCloud\Services\AI\Models\Requests\ChatRequest;
+use IBMCloud\Services\AI\ValueObjects\ChatMessage;
+use IBMCloud\Services\AI\ValueObjects\ModelId;
+
+// Create a conversation
+$messages = [
+    ChatMessage::user("What is the capital of France?"),
+];
+
+$request = ChatRequest::create(
+    ModelId::from('mistralai/mistral-large'),
+    $messages
+)->withProjectId($projectId);
+
+$response = $watsonx->chat($request);
+echo $response->getContent(); // "The capital of France is Paris..."
+
+// Continue the conversation
+$messages[] = ChatMessage::assistant($response->getContent());
+$messages[] = ChatMessage::user("What is the population?");
+
+$request2 = ChatRequest::create(
+    ModelId::from('mistralai/mistral-large'),
+    $messages
+)->withProjectId($projectId);
+
+$response2 = $watsonx->chat($request2);
+echo $response2->getContent(); // "The population of Paris is approximately 2.1 million..."
+```
+
+### Chat API - Tool/Function Calling
+
+```php
+use IBMCloud\Services\AI\Models\ChatTool;
+use IBMCloud\Services\AI\Models\ChatToolChoice;
+
+// Define available tools
+$tools = [
+    ChatTool::function(
+        'get_weather',
+        'Get the current weather for a location',
+        ChatTool::createParameterSchema([
+            'location' => ChatTool::stringParam('City and country'),
+            'unit' => ChatTool::stringParam('Temperature unit', ['celsius', 'fahrenheit']),
+        ], ['location'])
+    ),
+];
+
+// Create request with tools
+$request = ChatRequest::create(
+    ModelId::from('mistralai/mistral-large'),
+    [ChatMessage::user("What's the weather in Paris?")]
+)
+->withProjectId($projectId)
+->withTools($tools, ChatToolChoice::auto());
+
+$result = $watsonx->chat($request);
+
+// Check if model wants to call a tool
+if ($result->hasToolCalls()) {
+    foreach ($result->getAllToolCalls() as $toolCall) {
+        echo "Function: " . $toolCall->getFunctionName() . "\n";
+        echo "Arguments: " . $toolCall->getArguments() . "\n";
+        // Execute your function here and send results back
+    }
+}
 ```
 
 ### Streaming Responses
@@ -338,11 +412,18 @@ IBM_RESULTS_CONNECTION_ID=your-results-connection
 - **`watsonx-example.php`**: Foundation models with text generation
   - Shows model selection, parameter configuration
   - Demonstrates completion requests with different prompts
-  
+
+- **`watsonx-chat-example.php`**: Chat API with multi-turn conversations
+  - Multi-turn dialogue management
+  - Tool/function calling demonstrations
+  - JSON response mode
+  - Context injection
+  - Token usage tracking
+
 - **`watsonx-streaming-example.php`**: Real-time streaming responses
   - Token-by-token streaming for interactive applications
   - Progress tracking and partial response handling
-  
+
 - **`watsonx-simple-example.php`**: Minimal WatsonX setup
   - Simplest possible implementation
   - Good starting point for new users

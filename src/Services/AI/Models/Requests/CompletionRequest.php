@@ -203,12 +203,6 @@ class CompletionRequest
                 'Cannot specify both project_id and space_id. Choose one.'
             );
         }
-
-        if ($this->prompt->hasSensitiveContent()) {
-            throw new InvalidArgumentException(
-                'Prompt appears to contain sensitive content. Please review before sending.'
-            );
-        }
     }
 
     // Getters

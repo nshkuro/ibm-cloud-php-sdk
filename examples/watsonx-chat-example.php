@@ -47,7 +47,7 @@ $messages = [
 // Note: The chat API may require a deployment ID rather than a model ID
 // For testing, we're using a model ID but you may need to create a deployment first
 $request = ChatRequest::create(
-    ModelId::from('mistralai/mistral-large'),  // Try a different model
+    ModelId::from('meta-llama/llama-4-maverick-17b-128e-instruct-fp8'),  // Try a different model
     $messages
 )->withProjectId($_ENV['IBM_WATSONX_PROJECT_ID']);
 
@@ -62,7 +62,7 @@ try {
     $messages[] = ChatMessage::user("What is the population of that city?");
 
     $request2 = ChatRequest::create(
-        ModelId::from('mistralai/mistral-large'),
+        ModelId::from('meta-llama/llama-4-maverick-17b-128e-instruct-fp8'),
         $messages
     )->withProjectId($_ENV['IBM_WATSONX_PROJECT_ID']);
 
@@ -91,7 +91,7 @@ $contextMessages = [
 ];
 
 $contextRequest = ChatRequest::create(
-    ModelId::from('mistralai/mistral-large'),
+    ModelId::from('meta-llama/llama-4-maverick-17b-128e-instruct-fp8'),
     $contextMessages
 )
 ->withProjectId($_ENV['IBM_WATSONX_PROJECT_ID'])
@@ -124,7 +124,7 @@ $paramMessages = [
 ];
 
 $paramRequest = ChatRequest::create(
-    ModelId::from('mistralai/mistral-large'),
+    ModelId::from('meta-llama/llama-4-maverick-17b-128e-instruct-fp8'),
     $paramMessages
 )
 ->withProjectId($_ENV['IBM_WATSONX_PROJECT_ID'])
@@ -148,7 +148,7 @@ $jsonMessages = [
 ];
 
 $jsonRequest = ChatRequest::create(
-    ModelId::from('mistralai/mistral-large'),
+    ModelId::from('meta-llama/llama-4-maverick-17b-128e-instruct-fp8'),
     $jsonMessages
 )
 ->withProjectId($_ENV['IBM_WATSONX_PROJECT_ID'])
@@ -206,7 +206,7 @@ $toolMessages = [
 ];
 
 $toolRequest = ChatRequest::create(
-    ModelId::from('mistralai/mistral-large'),
+    ModelId::from('meta-llama/llama-4-maverick-17b-128e-instruct-fp8'),
     $toolMessages
 )
 ->withProjectId($_ENV['IBM_WATSONX_PROJECT_ID'])

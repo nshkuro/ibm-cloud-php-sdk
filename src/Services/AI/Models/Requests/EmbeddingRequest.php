@@ -16,7 +16,13 @@ final class EmbeddingRequest
         private readonly ?string $spaceId = null,
         private readonly ?array $parameters = null
     ) {
-        $this->validateRequest();
+        // Always validate inputs on construction to preserve invariants.
+        $this->validateInputs();
+
+        // Only validate project/space IDs if at least one is provided.
+        if ($this->projectId !== null || $this->spaceId !== null) {
+            $this->validateProjectOrSpace();
+        }
     }
 
     public static function create(ModelId $modelId, array $inputs): self
@@ -84,6 +90,9 @@ final class EmbeddingRequest
      */
     public function toArray(): array
     {
+        // Ensure IDs are present and valid before serialising.
+        $this->validateProjectOrSpace();
+
         $request = [
             'model_id' => $this->modelId->toString(),
             'inputs' => $this->inputs,
@@ -107,7 +116,7 @@ final class EmbeddingRequest
     /**
      * Validate the request.
      */
-    private function validateRequest(): void
+    private function validateInputs(): void
     {
         if (empty($this->inputs)) {
             throw new InvalidArgumentException('Inputs array cannot be empty.');
@@ -125,22 +134,17 @@ final class EmbeddingRequest
             if (empty($input)) {
                 throw new InvalidArgumentException('Input strings cannot be empty.');
             }
-
-            if (strlen($input) > 8192) {
-                throw new InvalidArgumentException('Input strings cannot exceed 8,192 characters.');
-            }
         }
+    }
 
+    private function validateProjectOrSpace(): void
+    {
         if ($this->projectId === null && $this->spaceId === null) {
-            throw new InvalidArgumentException(
-                'Either project_id or space_id must be provided.'
-            );
+            throw new InvalidArgumentException('Either project_id or space_id must be provided.');
         }
 
         if ($this->projectId !== null && $this->spaceId !== null) {
-            throw new InvalidArgumentException(
-                'Cannot specify both project_id and space_id. Choose one.'
-            );
+            throw new InvalidArgumentException('Cannot specify both project_id and space_id. Choose one.');
         }
     }
 

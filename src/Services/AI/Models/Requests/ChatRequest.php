@@ -7,6 +7,7 @@ namespace IBMCloud\Services\AI\Models\Requests;
 use IBMCloud\Services\AI\Models\ChatTool;
 use IBMCloud\Services\AI\Models\ChatToolChoice;
 use IBMCloud\Services\AI\Models\GenerationParameters;
+use IBMCloud\Services\AI\Models\ResponseFormat;
 use IBMCloud\Services\AI\ValueObjects\ChatMessage;
 use IBMCloud\Services\AI\ValueObjects\ChatRole;
 use IBMCloud\Services\AI\ValueObjects\ModelId;
@@ -20,6 +21,8 @@ class ChatRequest
     /** @var ChatTool[] */
     private array $tools;
 
+    private readonly ?ResponseFormat $responseFormat;
+
     public function __construct(
         private readonly ModelId $modelId,
         array $messages,
@@ -29,11 +32,17 @@ class ChatRequest
         array $tools = [],
         private readonly ?ChatToolChoice $toolChoice = null,
         private readonly ?string $context = null,
-        private readonly ?array $responseFormat = null,
+        ResponseFormat|array|null $responseFormat = null,
         private readonly ?array $moderations = null
     ) {
         $this->setMessages($messages);
         $this->setTools($tools);
+
+        // Convert array to ResponseFormat for backwards compatibility.
+        if (is_array($responseFormat)) {
+            $responseFormat = ResponseFormat::fromArray($responseFormat);
+        }
+        $this->responseFormat = $responseFormat;
 
         if ($this->projectId !== null || $this->spaceId !== null) {
             $this->validateRequest();
@@ -208,10 +217,17 @@ class ChatRequest
     }
 
     /**
-     * Set response format (e.g., JSON mode).
+     * Set response format (e.g., JSON mode, JSON schema).
+     *
+     * @param ResponseFormat|array $format ResponseFormat object or legacy array format.
      */
-    public function withResponseFormat(array $format): self
+    public function withResponseFormat(ResponseFormat|array $format): self
     {
+        // Convert legacy array format to ResponseFormat for backwards compatibility.
+        if (is_array($format)) {
+            $format = ResponseFormat::fromArray($format);
+        }
+
         return new self(
             $this->modelId,
             $this->messages,
@@ -228,10 +244,35 @@ class ChatRequest
 
     /**
      * Enable JSON response mode.
+     * The model will return valid JSON, but structure is not enforced.
      */
     public function withJsonMode(): self
     {
-        return $this->withResponseFormat(['type' => 'json_object']);
+        return $this->withResponseFormat(ResponseFormat::jsonObject());
+    }
+
+    /**
+     * Enable JSON schema response mode.
+     * The model will return JSON that strictly conforms to the provided schema.
+     *
+     * @param string $name A descriptive name for the schema.
+     * @param array|string $schema The JSON schema definition (array or JSON string).
+     * @param bool $strict Whether to enforce strict schema validation.
+     */
+    public function withJsonSchema(string $name, array|string $schema, bool $strict = true): self
+    {
+        // Convert JSON string to array if needed.
+        if (is_string($schema)) {
+            $decoded = json_decode($schema, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new InvalidArgumentException(
+                    'Invalid JSON schema string: ' . json_last_error_msg()
+                );
+            }
+            $schema = $decoded;
+        }
+
+        return $this->withResponseFormat(ResponseFormat::jsonSchema($name, $schema, $strict));
     }
 
     /**
@@ -305,7 +346,7 @@ class ChatRequest
         }
 
         if ($this->responseFormat !== null) {
-            $request['response_format'] = $this->responseFormat;
+            $request['response_format'] = $this->responseFormat->toArray();
         }
 
         if ($this->moderations !== null) {
@@ -374,7 +415,7 @@ class ChatRequest
         return $this->context;
     }
 
-    public function getResponseFormat(): ?array
+    public function getResponseFormat(): ?ResponseFormat
     {
         return $this->responseFormat;
     }

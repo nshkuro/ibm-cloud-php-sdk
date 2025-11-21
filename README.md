@@ -521,12 +521,6 @@ IBM Cloud Object Storage Demo
    - data/report.pdf (1.2 MB)
 ```
 
-### Sample Files
-
-The `examples/files/` directory contains sample documents for testing:
-- `sample_1.txt`: Simple text file for basic operations
-- `Basingstoke - Categories and descriptions.xlsx`: Excel file for data extraction tests
-
 ## Development
 
 ### Requirements
@@ -560,21 +554,6 @@ composer analyse
 2. Add comprehensive tests for new features
 3. Update documentation for public APIs
 4. Use type hints and readonly properties where applicable
-
-## Roadmap
-
-### Phase 2 (Planned)
-- [ ] **Additional Services**: Watson Assistant, Language Translator, Speech Services
-- [ ] **Connection Pooling**: HTTP/2 multiplexing and persistent connections
-- [ ] **Async Support**: Promise-based API for concurrent operations
-- [ ] **Caching Layer**: Response caching with TTL and invalidation
-- [ ] **Metrics & Monitoring**: OpenTelemetry integration and health checks
-
-### Phase 3 (Future)
-- [ ] **Service Discovery**: Automatic endpoint discovery and load balancing
-- [ ] **Event Streaming**: Real-time event processing with WebSockets
-- [ ] **GraphQL Support**: Modern API interface for complex queries
-- [ ] **CLI Tools**: Command-line utilities for common operations
 
 ## License
 

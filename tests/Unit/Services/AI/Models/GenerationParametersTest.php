@@ -229,9 +229,127 @@ final class GenerationParametersTest extends TestCase
     {
         $params = new GenerationParameters();
         $array = $params->toArray();
-        
+
         $this->assertArrayNotHasKey('min_new_tokens', $array);
         $this->assertArrayNotHasKey('temperature', $array);
         $this->assertArrayNotHasKey('top_k', $array);
+    }
+
+    public function testSetGuidedJson(): void
+    {
+        $schema = [
+            'type' => 'object',
+            'properties' => [
+                'name' => ['type' => 'string']
+            ]
+        ];
+
+        $params = (new GenerationParameters())->guidedJson($schema);
+
+        $this->assertSame($schema, $params->getGuidedJson());
+    }
+
+    public function testRejectsEmptyGuidedJson(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Guided JSON schema cannot be empty.');
+
+        (new GenerationParameters())->guidedJson([]);
+    }
+
+    public function testSetGuidedChoice(): void
+    {
+        $choices = ['yes', 'no', 'maybe'];
+        $params = (new GenerationParameters())->guidedChoice($choices);
+
+        $this->assertSame($choices, $params->getGuidedChoice());
+    }
+
+    public function testRejectsEmptyGuidedChoice(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Guided choices cannot be empty.');
+
+        (new GenerationParameters())->guidedChoice([]);
+    }
+
+    public function testRejectsNonStringGuidedChoice(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Each choice must be a non-empty string.');
+
+        (new GenerationParameters())->guidedChoice(['valid', 123]);
+    }
+
+    public function testRejectsEmptyStringInGuidedChoice(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Each choice must be a non-empty string.');
+
+        (new GenerationParameters())->guidedChoice(['valid', '']);
+    }
+
+    public function testSetGuidedRegex(): void
+    {
+        $pattern = '^[A-Z][a-z]+$';
+        $params = (new GenerationParameters())->guidedRegex($pattern);
+
+        $this->assertSame($pattern, $params->getGuidedRegex());
+    }
+
+    public function testRejectsEmptyGuidedRegex(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Guided regex pattern cannot be empty.');
+
+        (new GenerationParameters())->guidedRegex('');
+    }
+
+    public function testSetGuidedGrammar(): void
+    {
+        $grammar = 'S -> NP VP';
+        $params = (new GenerationParameters())->guidedGrammar($grammar);
+
+        $this->assertSame($grammar, $params->getGuidedGrammar());
+    }
+
+    public function testRejectsEmptyGuidedGrammar(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Guided grammar cannot be empty.');
+
+        (new GenerationParameters())->guidedGrammar('');
+    }
+
+    public function testToArrayIncludesGuidedParameters(): void
+    {
+        $schema = ['type' => 'object'];
+        $choices = ['yes', 'no'];
+        $regex = '^test$';
+        $grammar = 'S -> test';
+
+        $params = (new GenerationParameters())
+            ->guidedJson($schema)
+            ->guidedChoice($choices)
+            ->guidedRegex($regex)
+            ->guidedGrammar($grammar);
+
+        $array = $params->toArray();
+
+        $this->assertSame($schema, $array['guided_json']);
+        $this->assertSame($choices, $array['guided_choice']);
+        $this->assertSame($regex, $array['guided_regex']);
+        $this->assertSame($grammar, $array['guided_grammar']);
+    }
+
+    public function testToArrayExcludesNullGuidedParameters(): void
+    {
+        $params = new GenerationParameters();
+        $array = $params->toArray();
+
+        $this->assertArrayNotHasKey('guided_json', $array);
+        $this->assertArrayNotHasKey('guided_choice', $array);
+        $this->assertArrayNotHasKey('guided_regex', $array);
+        $this->assertArrayNotHasKey('guided_grammar', $array);
     }
 }

@@ -521,12 +521,6 @@ IBM Cloud Object Storage Demo
    - data/report.pdf (1.2 MB)
 ```
 
-### Sample Files
-
-The `examples/files/` directory contains sample documents for testing:
-- `sample_1.txt`: Simple text file for basic operations
-- `Basingstoke - Categories and descriptions.xlsx`: Excel file for data extraction tests
-
 ## Development
 
 ### Requirements

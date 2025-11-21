@@ -22,6 +22,12 @@ final class GenerationParameters
     private ?float $typicalP = null;
     private ?array $promptVariables = null;
 
+    // Guided decoding parameters.
+    private ?array $guidedJson = null;
+    private ?array $guidedChoice = null;
+    private ?string $guidedRegex = null;
+    private ?string $guidedGrammar = null;
+
     public function __construct()
     {
         // Default values
@@ -264,6 +270,73 @@ final class GenerationParameters
     }
 
     /**
+     * Set guided JSON schema for structured output.
+     * Alternative to using response_format parameter.
+     *
+     * @param array $schema JSON schema definition.
+     */
+    public function guidedJson(array $schema): self
+    {
+        if (empty($schema)) {
+            throw new InvalidArgumentException('Guided JSON schema cannot be empty.');
+        }
+
+        $this->guidedJson = $schema;
+        return $this;
+    }
+
+    /**
+     * Set guided choice for multiple-choice output.
+     *
+     * @param array $choices List of allowed output values.
+     */
+    public function guidedChoice(array $choices): self
+    {
+        if (empty($choices)) {
+            throw new InvalidArgumentException('Guided choices cannot be empty.');
+        }
+
+        foreach ($choices as $choice) {
+            if (!is_string($choice) || empty($choice)) {
+                throw new InvalidArgumentException('Each choice must be a non-empty string.');
+            }
+        }
+
+        $this->guidedChoice = $choices;
+        return $this;
+    }
+
+    /**
+     * Set guided regex pattern for constrained output.
+     *
+     * @param string $pattern Regular expression pattern.
+     */
+    public function guidedRegex(string $pattern): self
+    {
+        if (empty($pattern)) {
+            throw new InvalidArgumentException('Guided regex pattern cannot be empty.');
+        }
+
+        $this->guidedRegex = $pattern;
+        return $this;
+    }
+
+    /**
+     * Set guided grammar for structured output.
+     *
+     * @param string $grammar Grammar specification.
+     */
+    public function guidedGrammar(string $grammar): self
+    {
+        if (empty($grammar)) {
+            throw new InvalidArgumentException('Guided grammar cannot be empty.');
+        }
+
+        $this->guidedGrammar = $grammar;
+        return $this;
+    }
+
+    /**
      * Create preset parameters for code generation.
      */
     public static function forCodeGeneration(): self
@@ -367,6 +440,22 @@ final class GenerationParameters
             $params['prompt_variables'] = $this->promptVariables;
         }
 
+        if ($this->guidedJson !== null) {
+            $params['guided_json'] = $this->guidedJson;
+        }
+
+        if ($this->guidedChoice !== null) {
+            $params['guided_choice'] = $this->guidedChoice;
+        }
+
+        if ($this->guidedRegex !== null) {
+            $params['guided_regex'] = $this->guidedRegex;
+        }
+
+        if ($this->guidedGrammar !== null) {
+            $params['guided_grammar'] = $this->guidedGrammar;
+        }
+
         return $params;
     }
 
@@ -429,5 +518,25 @@ final class GenerationParameters
     public function getPromptVariables(): ?array
     {
         return $this->promptVariables;
+    }
+
+    public function getGuidedJson(): ?array
+    {
+        return $this->guidedJson;
+    }
+
+    public function getGuidedChoice(): ?array
+    {
+        return $this->guidedChoice;
+    }
+
+    public function getGuidedRegex(): ?string
+    {
+        return $this->guidedRegex;
+    }
+
+    public function getGuidedGrammar(): ?string
+    {
+        return $this->guidedGrammar;
     }
 }

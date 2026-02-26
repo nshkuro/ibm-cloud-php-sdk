@@ -26,6 +26,10 @@ final class TextExtractionParameters
     public const OCR_MODE_DISABLED = 'disabled';
     public const OCR_MODE_AUTO = 'auto';
 
+    public const EMBEDDED_IMAGES_DISABLED = 'disabled';
+    public const EMBEDDED_IMAGES_TEXT = 'enabled_text';
+    public const EMBEDDED_IMAGES_VERBALIZATION_ALL = 'enabled_verbalization_all';
+
     private static array $validOutputs = [
         self::OUTPUT_ASSEMBLY,
         self::OUTPUT_MARKDOWN,
@@ -47,13 +51,20 @@ final class TextExtractionParameters
         self::OCR_MODE_AUTO,
     ];
 
+    private static array $validEmbeddedImagesModes = [
+        self::EMBEDDED_IMAGES_DISABLED,
+        self::EMBEDDED_IMAGES_TEXT,
+        self::EMBEDDED_IMAGES_VERBALIZATION_ALL,
+    ];
+
     public function __construct(
         private readonly ?array $requestedOutputs = null,
         private readonly ?string $mode = null,
         private readonly ?string $ocrMode = null,
         private readonly ?array $languages = null,
         private readonly ?bool $tablesProcessingEnabled = null,
-        private readonly ?array $custom = null
+        private readonly ?array $custom = null,
+        private readonly ?string $createEmbeddedImages = null
     ) {
         if ($requestedOutputs !== null) {
             $this->validateRequestedOutputs($requestedOutputs);
@@ -69,6 +80,10 @@ final class TextExtractionParameters
 
         if ($languages !== null && empty($languages)) {
             throw new InvalidArgumentException('Languages cannot be empty array');
+        }
+
+        if ($createEmbeddedImages !== null && !in_array($createEmbeddedImages, self::$validEmbeddedImagesModes)) {
+            throw new InvalidArgumentException("Invalid embedded images mode: {$createEmbeddedImages}");
         }
     }
 
@@ -151,6 +166,11 @@ final class TextExtractionParameters
         return $this->custom;
     }
 
+    public function getCreateEmbeddedImages(): ?string
+    {
+        return $this->createEmbeddedImages;
+    }
+
     public function toArray(): array
     {
         $data = [];
@@ -177,6 +197,10 @@ final class TextExtractionParameters
 
         if ($this->custom !== null) {
             $data['custom'] = $this->custom;
+        }
+
+        if ($this->createEmbeddedImages !== null) {
+            $data['create_embedded_images'] = $this->createEmbeddedImages;
         }
 
         return $data;

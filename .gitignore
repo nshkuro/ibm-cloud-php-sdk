@@ -51,3 +51,6 @@ temp/
 phpunit.local.xml
 phpstan.local.neon
 .php-cs-fixer.local.php
+
+# Serena
+.serena/

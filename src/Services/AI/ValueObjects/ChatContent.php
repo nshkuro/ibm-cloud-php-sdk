@@ -25,6 +25,9 @@ final class ChatContent
 
     /**
      * Create from structured content array.
+     *
+     * Accepts either a single structured content item (with 'type' key)
+     * or an indexed array of content parts for multimodal messages.
      */
     public static function fromArray(array $content): self
     {
@@ -32,8 +35,11 @@ final class ChatContent
             throw new InvalidArgumentException('Chat content array cannot be empty.');
         }
 
-        // Validate structured content format.
+        // If no 'type' key at top level, treat as array of content parts.
         if (!isset($content['type'])) {
+            if (array_is_list($content)) {
+                return self::fromParts($content);
+            }
             throw new InvalidArgumentException('Structured content must have a "type" field.');
         }
 
